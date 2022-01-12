@@ -2,19 +2,24 @@ import os
 import datetime
 import random
 
-# def convertToCardValue(int card):
-    # checks if a card is a face card (value 10), or if ace
+def convertNonAceCard(card): # card will be [2,13]
+    if card > 10:
+        return 10
+    else:
+        return card 
+    
 
-def getHandValue(hand):
+def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
     total = 0
-    for card in hand:
-        if 11 < card < 1: # regular card
-            total += card
-            break
-        if card > 10: # face card
-            total += 10 
+    for card in hand: # hand should be a set instead of list since order does not matter
+        if card > 1: # NOT an ace
+            total += convertNonAceCard(card)
+        else:       # is an ace
+            if total > 10:
+                total += 1
+            else:
+                total += 11
     return total
-
 
 def checkBlackjack():
     pass
