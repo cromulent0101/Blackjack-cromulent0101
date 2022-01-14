@@ -1,14 +1,18 @@
-import os
-import datetime
 import random
 
 cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
 
 def printPlayerHand(hand): # print player's hand cards
-    # print("Player hand: ")
-    #     for card in hand: print(cardMap[card])
-    # print(cardMap[hand])
+    print("Player hand: ",end="  ")
+    for card in hand:
+        print(cardMap[card], end ="  ")
+    print("")
 
+def printDealerHand(hand): # print player's hand cards
+    print("Dealer hand: ",end="  ")
+    for card in hand:
+        print(cardMap[card], end ="  ")
+    print("")
 
 def convertNonAceCard(card): # card will be [2,13]
     if card > 10:
@@ -36,47 +40,63 @@ def dealCard(deck):
 
 deck = ([i for i in range(0,51)]) 
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
-print(deck)
+# print(deck)
  
 chips = 100
 # bet = int(input("Enter your bet: "))
 bet = 10
 
 p1 = dealCard(deck) # cards represnted as [1,13] but these are not their values
-d1 = dealCard(deck) # hidden from players/dealer but dFaceUp is an ace, dealer checks
+holeCard = dealCard(deck) # hidden from players/dealer but dFaceUp is an ace, dealer checks
 p2 = dealCard(deck)
-d2 = dealCard(deck) # visible to player
-
-printPlayerHand([1,2,3,4])
+faceUpCard = dealCard(deck) # visible to player
 
 # create player's hand
 pHand=[p1,p2] # list of two integers
-dHand=[d1,d2]
-# if player gets blackjack they instantly win 1.5 value of their bet
-print(f"Dealer card:   {cardMap[d2]}")
-# print(f"Player's hand value: {getHandValue(pHand)} ") 
+dHand=[holeCard,faceUpCard]
+print(f"Dealer card:   {cardMap[faceUpCard]}")
+
 if getHandValue(pHand)==21 and getHandValue(dHand)==21:
     # player pushes
-    print("Player cards: ",cardMap[p1]," ",cardMap[p2])
+    printPlayerHand(pHand)
     print(f"Push!")
-    # break
 elif getHandValue(dHand)==21:
     # dealer blackjack
-    print("Player cards: ",cardMap[p1]," ",cardMap[p2])
+    printDealerHand(pHand)
     print("Dealer blackjack!")
     chips -= bet
-    # break
-elif getHandValue(pHand)==21:
+elif getHandValue(pHand)==21: # if player gets blackjack they instantly win 1.5 value of their bet
     # player blackjack
-    print("Player cards: ",cardMap[p1]," ",cardMap[p2])
+    printPlayerHand(pHand)
     print("Player blackjack!")
     chips += bet*(3/2)
-    # break
+
 else: # player chooses to hit, stand, double down, or split
     while getHandValue(pHand) < 21: # only give player options when value below 21
-        print("Player cards: ",cardMap[p1]," ",cardMap[p2])
+        printPlayerHand(pHand)
         action = input("Hit or stand? ").lower()
         if action == "hit":
-            print("foo")
             pHand.append(dealCard(deck))
-            break
+        elif action == "stand":
+            break  # leave the loop of betting and dealer does their thing
+        else:
+            print("Not a valid move")
+        
+if getHandValue(pHand) > 21:
+    printPlayerHand(pHand)
+    print(f"Bust ({getHandValue(pHand)})!")
+else: # Now the dealer deals
+    print("Dealer is now dealing...")
+    while getHandValue(dHand) < 17: # S17 for now. dealer stands on soft 17
+        dHand.append(dealCard(deck))
+    printDealerHand(dHand)
+    printPlayerHand(pHand)
+    if getHandValue(dHand) > 21:
+        print(f"Dealer busts! ({getHandValue(dHand)})")
+    elif getHandValue(pHand) > getHandValue(dHand):
+        print(f"Player ({getHandValue(pHand)}) beats dealer ({getHandValue(dHand)})!")
+    elif getHandValue(pHand) < getHandValue(dHand):
+        print(f"Dealer ({getHandValue(dHand)}) beats player ({getHandValue(pHand)})!")
+    else:
+        print(f"Push! ({getHandValue(dHand)})")
+    
