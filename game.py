@@ -8,7 +8,7 @@ def printPlayerHand(hand): # print player's hand cards
         print(cardMap[card], end ="  ")
     print("")
 
-def printDealerHand(hand): # print player's hand cards
+def printDealerHand(hand): # print dealer's hand cards
     print("Dealer hand: ",end="  ")
     for card in hand:
         print(cardMap[card], end ="  ")
@@ -22,6 +22,9 @@ def convertNonAceCard(card): # card will be [2,13]
 
 def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
     total = 0
+    # if there is one ace it could be 11 or 1
+    # if there is more than one ace, all following aces are 1
+    # current edge case: if first card is ace, second is three, third is nine, dealer erroneously busts
     for card in hand: # hand should be a set instead of list since order does not matter
         if card > 1: # NOT an ace
             total += convertNonAceCard(card)
@@ -32,15 +35,11 @@ def getHandValue(hand): # easiest to determine value of cards in hand context be
                 total += 11
     return total
 
-def checkBlackjack():
-    pass
-
 def dealCard(deck):
     return (deck.pop() % 13)+1
 
-deck = ([i for i in range(0,51)]) 
+deck = ([i for i in range(0,51)]) # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
-# print(deck)
  
 chips = 100
 # bet = int(input("Enter your bet: "))
@@ -56,12 +55,10 @@ pHand=[p1,p2] # list of two integers
 dHand=[holeCard,faceUpCard]
 print(f"Dealer card:   {cardMap[faceUpCard]}")
 
-if getHandValue(pHand)==21 and getHandValue(dHand)==21:
-    # player pushes
+if getHandValue(pHand)==21 and getHandValue(dHand)==21: # blackjack push
     printPlayerHand(pHand)
     print(f"Push!")
-elif getHandValue(dHand)==21:
-    # dealer blackjack
+elif getHandValue(dHand)==21:     # dealer blackjack
     printDealerHand(pHand)
     print("Dealer blackjack!")
     chips -= bet
