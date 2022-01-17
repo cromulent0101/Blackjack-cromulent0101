@@ -1,5 +1,10 @@
 import random
 
+## settings ##
+ddas = False
+h17 = False
+surrender = False
+
 cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
 
 def printPlayerHand(hand): # print player's hand cards
@@ -74,11 +79,15 @@ elif getHandValue(pHand)==21: # if player gets blackjack they instantly win 1.5 
 else: # player chooses to hit, stand, double down, or split
     while getHandValue(pHand) < 21: # only give player options when value below 21
         printPlayerHand(pHand)
-        action = input("Hit or stand? ").lower()
+        action = input("Hit, stand, or double? ").lower()
         if action == "hit":
             pHand.append(dealCard(deck))
         elif action == "stand":
             break  # leave the loop of betting and dealer does their thing
+        elif action == "double":
+            pHand.append(dealCard(deck))
+            bet += bet
+            break
         else:
             print("Not a valid move")
     if getHandValue(pHand) > 21:
