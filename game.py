@@ -21,19 +21,23 @@ def convertNonAceCard(card): # card will be [2,13]
         return card 
 
 def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
-    total = 0
+    hardTotal = 0
+    aceCount = 0
     # if there is one ace it could be 11 or 1
-    # if there is more than one ace, all following aces are 1
+    # if non-ace total is >=11, all aces are 1
     # current edge case: if first card is ace, second is three, third is nine, dealer erroneously busts
+    # run through hard hards first and keep a total, then run thru aces
     for card in hand: # hand should be a set instead of list since order does not matter
         if card > 1: # NOT an ace
-            total += convertNonAceCard(card)
+            hardTotal += convertNonAceCard(card)
         else:       # is an ace
-            if total > 10:
-                total += 1
-            else:
-                total += 11
-    return total
+            aceCount += 1
+    if hardTotal >= 11:
+        return hardTotal + aceCount
+    elif aceCount > 0:
+        return hardTotal + 10 + aceCount
+    else:
+        return hardTotal
 
 def dealCard(deck):
     return (deck.pop() % 13)+1
@@ -67,7 +71,6 @@ elif getHandValue(pHand)==21: # if player gets blackjack they instantly win 1.5 
     printPlayerHand(pHand)
     print("Player blackjack!")
     chips += bet*(3/2)
-
 else: # player chooses to hit, stand, double down, or split
     while getHandValue(pHand) < 21: # only give player options when value below 21
         printPlayerHand(pHand)
@@ -78,22 +81,21 @@ else: # player chooses to hit, stand, double down, or split
             break  # leave the loop of betting and dealer does their thing
         else:
             print("Not a valid move")
-        
-if getHandValue(pHand) > 21:
-    printPlayerHand(pHand)
-    print(f"Bust ({getHandValue(pHand)})!")
-else: # Now the dealer deals
-    print("Dealer is now dealing...")
-    while getHandValue(dHand) < 17: # S17 for now. dealer stands on soft 17
-        dHand.append(dealCard(deck))
-    printDealerHand(dHand)
-    printPlayerHand(pHand)
-    if getHandValue(dHand) > 21:
-        print(f"Dealer busts! ({getHandValue(dHand)})")
-    elif getHandValue(pHand) > getHandValue(dHand):
-        print(f"Player ({getHandValue(pHand)}) beats dealer ({getHandValue(dHand)})!")
-    elif getHandValue(pHand) < getHandValue(dHand):
-        print(f"Dealer ({getHandValue(dHand)}) beats player ({getHandValue(pHand)})!")
-    else:
-        print(f"Push! ({getHandValue(dHand)})")
+    if getHandValue(pHand) > 21:
+        printPlayerHand(pHand)
+        print(f"Bust ({getHandValue(pHand)})!")
+    else: # Now the dealer deals
+        print("Dealer is now dealing...")
+        while getHandValue(dHand) < 17: # S17 for now. dealer stands on soft 17
+            dHand.append(dealCard(deck))
+        printDealerHand(dHand)
+        printPlayerHand(pHand)
+        if getHandValue(dHand) > 21:
+            print(f"Dealer busts! ({getHandValue(dHand)})")
+        elif getHandValue(pHand) > getHandValue(dHand):
+            print(f"Player ({getHandValue(pHand)}) beats dealer ({getHandValue(dHand)})!")
+        elif getHandValue(pHand) < getHandValue(dHand):
+            print(f"Dealer ({getHandValue(dHand)}) beats player ({getHandValue(pHand)})!")
+        else:
+            print(f"Push! ({getHandValue(dHand)})")
     
