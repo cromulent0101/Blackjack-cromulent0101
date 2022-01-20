@@ -1,4 +1,5 @@
 import random
+import time
 
 ## settings ##
 ddas = False
@@ -78,36 +79,59 @@ elif getHandValue(pHand)[0]==21: # if player gets blackjack they instantly win 1
     printPlayerHand(pHand)
     print("Player blackjack!")
     chips += bet*(3/2)
-else: # player chooses to hit, stand, double down, or split
-    while getHandValue(pHand)[0] < 21: # only give player options when value below 21
-        printPlayerHand(pHand)
-        action = input("Hit, stand, or double? ").lower()
-        if action.startswith("h"):
-            pHand.append(dealCard(deck))
-        elif action.startswith("s"):
-            break  # leave the loop of betting and dealer does their thing
-        elif action.startswith("d"):
-            pHand.append(dealCard(deck))
-            bet += bet
-            break
-        else:
-            print("Not a valid move")
-    if getHandValue(pHand)[0] > 21:
-        printPlayerHand(pHand)
-        print(f"Bust ({getHandValue(pHand)[0]})!")
-    else: # Now the dealer deals
-        print("Dealer is now dealing...")
-        while (getHandValue(dHand)[0] < 17): 
-            dHand.append(dealCard(deck))
-            if getHandValue(dHand)[0] == 17 and getHandValue(dHand)[1] and s17: break
-        printDealerHand(dHand)
-        printPlayerHand(pHand)
-        if getHandValue(dHand)[0] > 21:
-            print(f"Dealer busts! ({getHandValue(dHand)[0]})")
-        elif getHandValue(pHand)[0] > getHandValue(dHand)[0]:
-            print(f"Player ({getHandValue(pHand)[0]}) beats dealer ({getHandValue(dHand)[0]})!")
-        elif getHandValue(pHand)[0] < getHandValue(dHand)[0]:
-            print(f"Dealer ({getHandValue(dHand)[0]}) beats player ({getHandValue(pHand)[0]})!")
-        else:
-            print(f"Push! ({getHandValue(dHand)[0]})")
+else: 
+    playableHands = [pHand]
+    totalHands = [pHand]
+    while(playableHands):                   # while there is a playable hand
+        time.sleep(0.1)
+        pHand = playableHands[0]            # current hand is first/last playable hand (need to see whch)
+        while getHandValue(pHand)[0] < 21:  # play blackjack! only give player options when value below 21
+            printPlayerHand(pHand)
+            action = input("Hit, stand, double, or split? ").lower()
+            if action.startswith("h"):
+                pHand.append(dealCard(deck))
+            elif action.startswith("st"):
+                playableHands.pop()
+                break  # leave the loop of betting for this hand
+            elif action.startswith("d"): # and ddas is allowed...
+                pHand.append(dealCard(deck))
+                bet += bet
+                playableHands.pop()
+                break
+            elif action.startswith("sp"): # splits can only happen when a hand has two cards
+                if pHand[0] != pHand[1]:
+                    print("You can't split non-pairs") # at some casinos you can split face cards
+                else:
+                    totalHands.pop()
+                    playableHands.pop()
+                    splitCard1 = dealCard(deck)     # this is NOT how cards are dealt after a split
+                    splitCard2 = dealCard(deck)
+                    totalHands.append([pHand[0],splitCard1])
+                    playableHands.append([pHand[0],splitCard1])
+                    totalHands.append([pHand[1],splitCard2])
+                    playableHands.append([pHand[1],splitCard2])
+            else:
+                print("Not a valid move")
+        if getHandValue(pHand)[0] > 21:
+            printPlayerHand(pHand)
+            print(f"Bust ({getHandValue(pHand)[0]})!")
+
+
+    # else: # Now the dealer deals after all hands are bust/stood
+    #     print("Dealer is now dealing...")
+    #     while (getHandValue(dHand)[0] < 17): 
+    #         dHand.append(dealCard(deck))
+    #         if getHandValue(dHand)[0] == 17 and getHandValue(dHand)[1] and s17: break
+    #     printDealerHand(dHand)
+    #     printPlayerHand(pHand)
+
+
+    #     if getHandValue(dHand)[0] > 21:
+    #         print(f"Dealer busts! ({getHandValue(dHand)[0]})")
+    #     elif getHandValue(pHand)[0] > getHandValue(dHand)[0]:
+    #         print(f"Player ({getHandValue(pHand)[0]}) beats dealer ({getHandValue(dHand)[0]})!")
+    #     elif getHandValue(pHand)[0] < getHandValue(dHand)[0]:
+    #         print(f"Dealer ({getHandValue(dHand)[0]}) beats player ({getHandValue(pHand)[0]})!")
+    #     else:
+    #         print(f"Push! ({getHandValue(dHand)[0]})")
     
