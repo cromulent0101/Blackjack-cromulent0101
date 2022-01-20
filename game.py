@@ -4,6 +4,7 @@ import random
 ddas = False
 s17 = False
 surrender = False
+decks = 3
 
 cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
 
@@ -25,33 +26,31 @@ def convertNonAceCard(card): # card will be [2,13]
     else:
         return card 
 
-def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
+def getHandValue(hand):                         # easiest to determine value of cards in hand context because of aces
     hardTotal = 0
     aceCount = 0
-    # if there is one ace it could be 11 or 1
-    # if non-ace total is >=11, all aces are 1
-    # current edge case: if first card is ace, second is three, third is nine, dealer erroneously busts
-    # A 3 A 7 =/= 22 is another edge case
     # run through hard hards first and keep a total, then run thru aces
-    for card in hand: # hand should be a set instead of list since order does not matter
-        if card > 1: # NOT an ace
+    for card in hand:                           # hand should be a set instead of list since order does not matter
+        if card > 1:                            # NOT an ace
             hardTotal += convertNonAceCard(card)
-        else:       # is an ace
+    else:                                       # is an ace
             aceCount += 1
-    if hardTotal >= 11: # can't be soft 17
+    if hardTotal >= 11:                         # can't be soft 17
         return hardTotal + aceCount, False
-    elif aceCount > 0: # could be soft 17
+    elif aceCount > 0:                          # could be soft 17
         if (hardTotal + 10 + aceCount) > 21: return (hardTotal + aceCount), False
         else: return (hardTotal + 10 + aceCount), (17==(hardTotal + 10 + aceCount)) 
-    else:               # can't be soft 17
+    else:                                       # can't be soft 17
         return hardTotal, False
 
 def dealCard(deck):
     return (deck.pop() % 13)+1
 
-deck = ([i for i in range(0,51)]) # will add ability for multi-deck
+deck = []
+for i in range(decks):
+    deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
- 
+print(deck, deck.count(31))
 chips = 100
 # bet = int(input("Enter your bet: "))
 bet = 10
