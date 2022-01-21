@@ -10,7 +10,7 @@ def printDealerHand(hand): # print dealer's hand cards
     print("Dealer hand: ",end="  ")
     for card in hand:
         print(cardMap[card], end ="  ")
-    print("")
+    print(f"  ({getHandValue(hand)[0]})")
 
 def convertNonAceCard(card): # card will be [2,13]
     if card > 10:
@@ -38,4 +38,4 @@ def getHandValue(hand): # easiest to determine value of cards in hand context be
         return hardTotal, False
 
 def dealCard(deck):
-    return (deck.pop() % 13)+1
+    return (deck.pop(0) % 13)+1
