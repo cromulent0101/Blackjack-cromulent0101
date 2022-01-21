@@ -1,54 +1,55 @@
 import random
 import time
+from cardutils import getHandValue,printDealerHand,convertNonAceCard,cardMap
 
 ## settings ##
 ddas = False
 s17 = False
 surrender = False
 
-cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
 
-def printPlayerHand(hand): # print player's hand cards
-    print("Player hand: ",end="  ")
-    for card in hand:
-        print(cardMap[card], end ="  ")
-    print("")
+class Hand:
+    def __init__(self,cards:list,bet:int,split:bool):
+        self.l = None
+        self.r = None
+        self.c = cards
+        self.b = bet
+        self.s = split
+        self.value = getHandValue(cards)
 
-def printDealerHand(hand): # print dealer's hand cards
-    print("Dealer hand: ",end="  ")
-    for card in hand:
-        print(cardMap[card], end ="  ")
-    print("")
+    def printPlayerHand(self): # print player's hand cards
+        print("Player hand: ",end="  ")
+        for card in self.c:
+            print(cardMap[card], end ="  ")
+        print("")
 
-def convertNonAceCard(card): # card will be [2,13]
-    if card > 10:
-        return 10
-    else:
-        return card 
+    def dealCard(self):
+        self.c.append(deck.pop() % 13)+1
+        self.value = getHandValue(self.c)
 
-def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
-    hardTotal = 0
-    aceCount = 0
-    # if there is one ace it could be 11 or 1
-    # if non-ace total is >=11, all aces are 1
-    # current edge case: if first card is ace, second is three, third is nine, dealer erroneously busts
-    # A 3 A 7 =/= 22 is another edge case
-    # run through hard hards first and keep a total, then run thru aces
-    for card in hand: # hand should be a set instead of list since order does not matter
-        if card > 1: # NOT an ace
-            hardTotal += convertNonAceCard(card)
-        else:       # is an ace
-            aceCount += 1
-    if hardTotal >= 11: # can't be soft 17
-        return hardTotal + aceCount, False
-    elif aceCount > 0: # could be soft 17
-        if (hardTotal + 10 + aceCount) > 21: return (hardTotal + aceCount), False
-        else: return (hardTotal + 10 + aceCount), (17==(hardTotal + 10 + aceCount)) 
-    else:               # can't be soft 17
-        return hardTotal, False
+def playHand(hand: Hand, split: bool): # returns winnings (if any) and whether the current hand should be split
+    while hand.value < 21:  # play blackjack! only give player options when value below 21
+        hand.printPlayerHand()
+        action = input("Hit, stand, double, or split? ").lower()
+        if action.startswith("h"):
+            hand.dealCard()
+        elif action.startswith("st"):
+            break  # leave the loop of betting for this hand
+        elif action.startswith("d") and ddas: # and ddas is allowed...
+            hand.dealCard()
+            playableHands.pop()
+            break
+        elif action.startswith("sp"): # splits can only happen when a hand has two cards
+            if hand[0] != hand[1]:
+                print("You can't split non-pairs") # at some casinos you can split face cards
+            else:
+                pass
+        else:
+            print("Not a valid move")
+        if getHandValue(hand)[0] > 21:
+            hand.printPlayerHand()
+            print(f"Bust ({getHandValue(hand)[0]})!")
 
-def dealCard(deck):
-    return (deck.pop() % 13)+1
 
 deck = ([i for i in range(0,51)]) # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
@@ -57,6 +58,8 @@ chips = 100
 # bet = int(input("Enter your bet: "))
 bet = 10
 
+pHand = Hand([],bet,False)
+dHand = Hand([],0,False)
 p1 = dealCard(deck) # cards represnted as [1,13] but these are not their values
 holeCard = dealCard(deck) # hidden from players/dealer but dFaceUp is an ace, dealer checks
 p2 = dealCard(deck)
@@ -74,7 +77,7 @@ elif getHandValue(dHand)[0]==21:     # dealer blackjack
     printDealerHand(pHand)
     print("Dealer blackjack!")
     chips -= bet
-elif getHandValue(pHand)[0]==21: # if player gets blackjack they instantly win 1.5 value of their bet
+elif getHandValue(pHand)[0]==21:    # if player gets blackjack they instantly win 1.5 value of their bet
     # player blackjack
     printPlayerHand(pHand)
     print("Player blackjack!")
