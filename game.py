@@ -8,6 +8,7 @@ ddas = True
 s17 = False
 surrender = False
 onlySplitPairs = False
+decks = 1
 
 deck = []
 for i in range(decks):
