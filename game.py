@@ -1,7 +1,6 @@
 import random
 import time
-from cardutils import getHandValue,printDealerHand,convertNonAceCard,cardMap,dealCard
-
+from cardutils import getHandValue,printDealerHand,convertNonAceCard,cardMap,dealCard,Hand
 
 ## settings ##
 ddas = True
@@ -9,35 +8,7 @@ s17 = False
 surrender = False
 onlySplitPairs = False
 decks = 1
-
-deck = []
-for i in range(decks):
-    deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
-random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
-
-# deck = [2,3]  # dealyer's cards
-# deck.extend([3,3,4,3,5,3,3,3,8,9,10,11,12,13,3,3,4]) # players cards
-
-
-class Hand:
-    def __init__(self,cards:list,bet:int,split:bool):
-        self.l = None
-        self.r = None
-        self.c = cards
-        self.b = bet
-        self.s = split
-        self.value = getHandValue(cards)[0]
-
-    def printPlayerHand(self): # print player's hand cards
-        print("Player hand: ",end="  ")
-        for card in self.c:
-            print(cardMap[card], end ="  ")
-        print(f"  ({getHandValue(self.c)[0]})")
-
-    def dealCard(self):
-        self.c.append((deck.pop(0) % 13)+1)
-        self.value = getHandValue(self.c)[0]
-
+chips = 100
 
 def playHand(hand: Hand, split: bool): 
     if hand.s: hand.dealCard()          # if this hand is a product of split, deal another card
@@ -91,7 +62,15 @@ def playHand(hand: Hand, split: bool):
             hands.append(hand)
             print("Player blackjack!")
 
-chips = 100
+
+deck = []
+for i in range(decks):
+    deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
+random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
+
+deck = [2,3]  # dealyer's cards
+deck.extend([3,3,4,3,5,3,3,3,8,9,10,11,12,13,3,3,4]) # players cards
+
 while(chips > 0):
     bet = int(input("Enter your bet: "))
 
@@ -101,8 +80,8 @@ while(chips > 0):
     # create player's hand
     pHand = Hand([],bet,False)
     chips -= bet
-    pHand.dealCard()
-    pHand.dealCard()
+    pHand.dealCard(deck)
+    pHand.dealCard(deck)
 
     # create dealer's hand
     dHand=[faceUpCard,holeCard]
