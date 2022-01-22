@@ -2,13 +2,16 @@ import random
 import time
 from cardutils import getHandValue,printDealerHand,convertNonAceCard,cardMap,dealCard
 
+
 ## settings ##
 ddas = True
 s17 = False
 surrender = False
 onlySplitPairs = False
 
-deck = ([i for i in range(0,51)]) # will add ability for multi-deck
+deck = []
+for i in range(decks):
+    deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
 
 # deck = [2,3]  # dealyer's cards
@@ -125,7 +128,6 @@ while(chips > 0):
             dHand.append(dealCard(deck))
             if getHandValue(dHand)[0] == 17 and getHandValue(dHand)[1] and s17: break
         printDealerHand(dHand)
-        
 
         for hand in hands:
             hand.printPlayerHand()
@@ -147,6 +149,4 @@ while(chips > 0):
 
 
     print("Chips: ",chips)
-
-
     
