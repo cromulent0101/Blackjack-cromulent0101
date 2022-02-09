@@ -11,7 +11,7 @@ decks = 1
 chips = 100
 
 def playHand(hand: Hand, split: bool): 
-    if hand.s: hand.dealCard()          # if this hand is a product of split, deal another card
+    if hand.s: hand.dealCard(deck)          # if this hand is a product of split, deal another card
     global hands
     global chips
     if hand.value == 21: 
@@ -20,17 +20,23 @@ def playHand(hand: Hand, split: bool):
         print("Player blackjack!")
     while hand.value < 21:              # play blackjack! only give player options when value below 21
         hand.printPlayerHand()
+        time.sleep(1)
         action = input("Hit, stand, double, or split? ").lower()
         if action.startswith("h"):
-            hand.dealCard()
+            hand.dealCard(deck)
         elif action.startswith("st"):
             hands.append(hand)
             break  # leave the loop of betting for this hand
         elif action.startswith("d"): # and ddas is allowed...
             if (len(hand.c) == 2) and (ddas or not hand.s):  # only allow doubles on two cards
-                hand.dealCard()
                 chips -= hand.b
                 hand.b += hand.b
+                hand.dealCard(deck)
+                hand.printPlayerHand()
+                if hand.value > 21:
+                    print(f"Player busts! ({hand.value})")
+                if hand.value == 21:
+                    print("Player blackjack!")
                 hands.append(hand)
                 break
             else: print("Not a valid move")
@@ -55,7 +61,7 @@ def playHand(hand: Hand, split: bool):
             print("Not a valid move")
         if hand.value > 21:
             hand.printPlayerHand()
-            print(f"Player bust! ({hand.value})!")
+            print(f"Player busts! ({hand.value})")
             hands.append(hand)
         if hand.value == 21:
             hand.printPlayerHand()
@@ -69,10 +75,13 @@ for i in range(decks):
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
 
 deck = [2,3]  # dealyer's cards
-deck.extend([3,3,4,3,5,3,3,3,8,9,10,11,12,13,3,3,4]) # players cards
+deck.extend([3,3,4,3,5,3,3,3,8,9,7,11,12,13,3,3,4]) # players cards
 
 while(chips > 0):
     bet = int(input("Enter your bet: "))
+    if bet < 1 or bet > chips:
+        print("Invalid bet")
+        continue
 
     holeCard = dealCard(deck) # hidden from players/dealer but dFaceUp is an ace, dealer checks
     faceUpCard = dealCard(deck) # visible to player
@@ -112,7 +121,7 @@ while(chips > 0):
         for hand in hands:
             hand.printPlayerHand()
             if hand.value > 21: 
-                print(f"Player busted! ({hand.value})")
+                print(f"Player busts! ({hand.value})")
             else:
                 if getHandValue(dHand)[0] > 21:
                     print(f"Dealer busts! ({getHandValue(dHand)[0]})")
@@ -126,7 +135,6 @@ while(chips > 0):
                 else:
                     print(f"Push! ({getHandValue(dHand)[0]})")
                     chips += hand.b
-
 
     print("Chips: ",chips)
     
