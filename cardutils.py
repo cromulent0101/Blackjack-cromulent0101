@@ -2,11 +2,10 @@ cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 
 
 class Hand:
     def __init__(self,cards:list,bet:int,split:bool):
-        self.l = None
-        self.r = None
         self.c = cards
         self.b = bet
         self.s = split
+        self.has_ace = False
         self.value = getHandValue(cards)[0]
 
     def printPlayerHand(self): 
@@ -24,6 +23,8 @@ class Hand:
         """
         self.c.append((deck.pop(0) % 13)+1)
         self.value = getHandValue(self.c)[0]
+        if self.c.count(1):
+            self.has_ace = True
 
 def printPlayerHand(hand): # print player's hand cards
     print("Player hand: ",end="  ")
