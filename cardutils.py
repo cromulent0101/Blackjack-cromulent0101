@@ -44,23 +44,18 @@ def convertNonAceCard(card): # card will be [2,13]
     else:
         return card 
 
-def getHandValue(hand): # easiest to determine value of cards in hand context because of aces
+def getHandValue(hand): # returns numeric hand val and whether it is soft
     hardTotal = 0
     aceCount = 0
-    # if there is one ace it could be 11 or 1
-    # if non-ace total is >=11, all aces are 1
-    # run through hard hards first and keep a total, then run thru aces
-    for card in hand: # hand should be a set instead of list since order does not matter
+    for card in hand: # hand could be a set instead of list since order does not matter
         if card > 1: # NOT an ace
             hardTotal += convertNonAceCard(card)
         else:       # is an ace
             aceCount += 1
-    if hardTotal >= 11: # can't be soft 17
-        return hardTotal + aceCount, False
-    elif aceCount > 0: # could be soft 17
+    if aceCount > 0: # could be soft 
         if (hardTotal + 10 + aceCount) > 21: return (hardTotal + aceCount), False
-        else: return (hardTotal + 10 + aceCount), (17==(hardTotal + 10 + aceCount)) 
-    else:               # can't be soft 17
+        else: return (hardTotal + 10 + aceCount), True 
+    else:               # can't be soft 
         return hardTotal, False
 
 def dealCard(deck):

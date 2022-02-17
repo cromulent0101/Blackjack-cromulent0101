@@ -1,5 +1,5 @@
 import unittest
-from game import getHandValue
+from cardutils import getHandValue
 
 class TestStringMethods(unittest.TestCase):
 
