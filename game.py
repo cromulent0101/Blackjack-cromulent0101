@@ -123,9 +123,9 @@ for i in range(decks):
     deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
 
-deck = [5,6]  # dealyer's cards
-# deck.extend([3,3,4,3,5,3,3,3,8,9,7,11,12,13,3,3,4]) # players cards
-deck.extend([3,2,3,5,5,5]) # players cards
+# deck = [5,6]  # dealyer's cards
+# # deck.extend([3,3,4,3,5,3,3,3,8,9,7,11,12,13,3,3,4]) # players cards
+# deck.extend([3,2,3,5,5,5]) # players cards
 
 while(chips > 0):
     while True:
