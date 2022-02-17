@@ -5,7 +5,7 @@ class Hand:
         self.c = cards
         self.b = bet
         self.s = split
-        self.has_ace = False
+        self.soft = False
         self.value = getHandValue(cards)[0]
 
     def printPlayerHand(self): 
@@ -23,8 +23,7 @@ class Hand:
         """
         self.c.append((deck.pop(0) % 13)+1)
         self.value = getHandValue(self.c)[0]
-        if self.c.count(1):
-            self.has_ace = True
+        self.soft = getHandValue(self.c)[1]
 
 def printPlayerHand(hand): # print player's hand cards
     print("Player hand: ",end="  ")
