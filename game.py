@@ -22,7 +22,7 @@ def playHand(hand: Hand, split: bool, j: int):
         print(f"this is the {j} time playing a hand")
         print(f"This hand is a split: {hand.s}")
     j += 1
-    global hands
+    # global hands # don't know if we need this
     global chips
     if hand.value == 21: 
         hand.printPlayerHand()
@@ -48,7 +48,7 @@ def playHand(hand: Hand, split: bool, j: int):
         else:
             correct_action = strat[(hand.value,hand.soft,convertNonAceCard(faceUpCard))]
             if (correct_action == '\x1b[0;31;40m'+'Double'+'\x1b[0m' and len(hand.c)>2):
-                correct_action == '\x1b[0;33;40m'+'Hit'+'\x1b[0m'
+                correct_action = '\x1b[0;33;40m'+'Hit'+'\x1b[0m'
 
         if action.startswith("h"):
             if(correct_action=='\x1b[0;33;40m'+'Hit'+'\x1b[0m'):
@@ -68,7 +68,7 @@ def playHand(hand: Hand, split: bool, j: int):
                 print("Correct choice!")
             else:
                 print(f"Wrong, you should {correct_action}")
-            if (len(hand.c) == 2) and (ddas or not hand.s):  # only allow doubles on two cards
+            if ((len(hand.c) == 2) and (ddas or not hand.s)):  # only allow doubles on two cards
                 chips -= hand.b
                 hand.b += hand.b
                 hand.dealCard(deck)
@@ -123,11 +123,10 @@ for i in range(decks):
     deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
 random.shuffle(deck) # deck should be shuffled and we sequentially remove cards from list using pop
 
-# deck = [2,3]  # dealyer's cards
+deck = [5,6]  # dealyer's cards
 # deck.extend([3,3,4,3,5,3,3,3,8,9,7,11,12,13,3,3,4]) # players cards
-# deck.extend([9,10,11,12,13,13,12,11,10]) # players cards
+deck.extend([3,2,3,5,5,5]) # players cards
 
-'\x1b[0;31;40m' '\x1b[0m'
 while(chips > 0):
     while True:
         try:
@@ -139,7 +138,7 @@ while(chips > 0):
         print("Invalid bet")
         continue
 
-    holeCard = dealCard(deck) # hidden from players/dealer but dFaceUp is an ace, dealer checks
+    holeCard = dealCard(deck) # hidden from players/dealer but if hole card is an ace, dealer checks
     faceUpCard = dealCard(deck) # visible to player
 
     # create player's hand
