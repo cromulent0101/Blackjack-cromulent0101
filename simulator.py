@@ -57,11 +57,19 @@ def play_specific_cards_once(cards:list,action,dealer_card):
 
 print(play_specific_cards_once([10,5],"hit",5))
 
-hit_chips = 1000
-for i in range(100000):
-    hit_chips += play_specific_cards_once([5,6],"hit",1)
+
+cards_to_test = [6,6]
+trials = 1000
+up_card = 1
+hit_chips = 10000
+for i in range(trials):
+    hit_chips += play_specific_cards_once(cards_to_test,"hit",up_card)
 print(hit_chips)
-stand_chips = 1000
-for i in range(100000):
-    stand_chips += play_specific_cards_once([5,6],"double",1)
+double_chips = 10000
+for i in range(trials):
+    double_chips += play_specific_cards_once(cards_to_test,"double",up_card)
+print(double_chips)
+stand_chips = 10000
+for i in range(trials):
+    stand_chips += play_specific_cards_once(cards_to_test,"stand",up_card)
 print(stand_chips)
