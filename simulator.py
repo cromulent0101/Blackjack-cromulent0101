@@ -1,7 +1,7 @@
 import random
 import time
 from cardutils import getHandValue,printDealerHand,convertNonAceCard,cardMap,Hand,dealCard,convertNonAceCard
-from strategy import split_strat, strat
+from strategy import split_strat, strat, my_strat
 
 debug: False
 
@@ -25,22 +25,29 @@ def play_specific_cards_once(cards:list,action,dealer_card):
     for i in range(decks):
         deck.extend([i for i in range(0,51)])               # will add ability for multi-deck
     random.shuffle(deck)
-    # print(deck)
     deck.remove(dealer_card-1)
-    # print(deck)
     # remove one of the dealer's card from the deck
     dealer_cards = [dealer_card, dealCard(deck)]
     if getHandValue(dealer_cards)[0] == 21: return -10
 
-    # print(dealer_cards)
+    while True:
+        if action.startswith("h"):
+            cards.append(dealCard(deck))
+            if getHandValue(cards)[0] < 21:
+                value,soft = getHandValue(cards)
+                action = my_strat[(value,soft,convertNonAceCard(dealer_card))]
+                if action == 'double':
+                    action = 'hit'
+                if not action: break
+                continue
+            break
+        elif action.startswith("st"):
+            break  # leave the loop of betting for this hand
+        elif action.startswith("d"): 
+            cards.append(dealCard(deck))
+            double = 2
+            break
 
-    if action.startswith("h"):
-        cards.append(dealCard(deck))
-    elif action.startswith("st"):
-        pass  # leave the loop of betting for this hand
-    elif action.startswith("d"): 
-        cards.append(dealCard(deck))
-        double = 2
     if getHandValue(cards)[0] > 21:
         return -10*double
     elif getHandValue(cards)[0] == 21:
@@ -55,21 +62,18 @@ def play_specific_cards_once(cards:list,action,dealer_card):
     elif getHandValue(dealer_cards)[0] == getHandValue(cards)[0]: return 0
     else: return 10*double
 
-print(play_specific_cards_once([10,5],"hit",5))
-
-
-cards_to_test = [6,6]
-trials = 1000
+cards_to_test = [10,10] # how can I pass this by value
+trials = 500
 up_card = 1
 hit_chips = 10000
 for i in range(trials):
-    hit_chips += play_specific_cards_once(cards_to_test,"hit",up_card)
+    hit_chips += play_specific_cards_once([10,10],"hit",up_card)
 print(hit_chips)
 double_chips = 10000
 for i in range(trials):
-    double_chips += play_specific_cards_once(cards_to_test,"double",up_card)
+    double_chips += play_specific_cards_once([10,10],"double",up_card)
 print(double_chips)
 stand_chips = 10000
 for i in range(trials):
-    stand_chips += play_specific_cards_once(cards_to_test,"stand",up_card)
+    stand_chips += play_specific_cards_once([10,10],"stand",up_card)
 print(stand_chips)

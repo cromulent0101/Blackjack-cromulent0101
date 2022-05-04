@@ -239,6 +239,18 @@ s20_strat = {(20,True,2): '\x1b[0;32;40m'+'Stand'+'\x1b[0m',
             (20,True,1): '\x1b[0;32;40m'+'Stand'+'\x1b[0m',
             }
 
+h4_strat = {(4,False,2): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,3): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,4): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,5): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,6): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,7): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,8): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,9): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,10): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            (4,False,1): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
+            }
+
 h5_strat = {(5,False,2): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
             (5,False,3): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
             (5,False,4): '\x1b[0;33;40m'+'Hit'+'\x1b[0m',
@@ -451,8 +463,10 @@ h20_strat = {(20,False,2): '\x1b[0;32;40m'+'Stand'+'\x1b[0m',
 
 
 strat = {**s12_strat,**s13_strat,**s14_strat,**s15_strat,**s16_strat,**s17_strat,**s18_strat,**s19_strat,**s20_strat,
-        **h5_strat,**h6_strat,**h7_strat,**h8_strat,**h9_strat,**h10_strat,
+        **h4_strat,**h5_strat,**h6_strat,**h7_strat,**h8_strat,**h9_strat,**h10_strat,
         **h11_strat,**h12_strat,**h13_strat,**h14_strat,**h15_strat,**h16_strat,
         **h17_strat,**h18_strat,**h19_strat,**h20_strat}
-        
+    
+my_strat = {key: None for key in strat} # populate manually
+
 # print(strat[(14,False,3)])
