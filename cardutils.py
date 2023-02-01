@@ -2,9 +2,9 @@ cardMap = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 
 
 class Hand:
     def __init__(self,cards:list,bet:int,split:bool):
-        self.c = cards
-        self.b = bet
-        self.s = split
+        self.cards = cards
+        self.bet = bet
+        self.split = split
         self.soft = False
         self.value = getHandValue(cards)[0]
 
@@ -13,17 +13,17 @@ class Hand:
         Print player's hand in human-readable format.
         """
         print("Player hand: ",end="  ")
-        for card in self.c:
+        for card in self.cards:
             print(cardMap[card], end ="  ")
-        print(f"  ({getHandValue(self.c)[0]})")
+        print(f"  ({getHandValue(self.cards)[0]})")
 
     def dealCard(self,deck:list):
         """
         Deal a card to this hand.
         """
-        self.c.append((deck.pop(0) % 13)+1)
-        self.value = getHandValue(self.c)[0]
-        self.soft = getHandValue(self.c)[1]
+        self.cards.append((deck.pop(0) % 13)+1)
+        self.value = getHandValue(self.cards)[0]
+        self.soft = getHandValue(self.cards)[1]
 
 def printPlayerHand(hand): # print player's hand cards
     print("Player hand: ",end="  ")
